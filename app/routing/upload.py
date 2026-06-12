@@ -2,14 +2,32 @@ import os
 import uuid
 from dotenv import load_dotenv
 from pinecone import Pinecone
-from fastapi import UploadFile, File,APIRouter, Depends
+from fastapi import UploadFile, File,APIRouter, Depends,HTTPException
 from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 from app.dependencies import authenicate_user
+from app.database.db import get_db
+from sqlalchemy.orm import Session
+from app.database.schema.document_schema import DocumentSchema
+import cloudinary
+import cloudinary.uploader
+from app.config.app_config import getAppConfig
+
+
+
+
 
 load_dotenv()
 router = APIRouter(prefix="/upload" , dependencies=[Depends(authenicate_user)])
+
+def get_cloudinary():
+    config = getAppConfig()
+    cloudinary.config(
+        cloud_name=config.cloudinary_cloud_name,
+        api_key=config.cloudinary_api_key,
+        api_secret=config.cloudinary_api_secret,
+    )
 
 
 pc = Pinecone(
@@ -20,7 +38,38 @@ index = pc.Index("multi-pdf")
 
 
 @router.post("")
-async def upload_pdf(file: UploadFile = File(...)):
+async def upload_pdf(file: UploadFile = File(...),db: Session = Depends(get_db),user=Depends(authenicate_user)):
+    user_id = user["id"]
+
+    if file.content_type != "application/pdf":
+        raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+
+    file_bytes = file.file.read()
+
+    get_cloudinary()
+
+    result = cloudinary.uploader.upload(
+        file_bytes,
+        resource_type="raw",
+        folder="pdfs",
+        public_id=file.filename,
+    )
+
+    print('result',result)
+
+    document = DocumentSchema(
+        user_id=user_id,
+        file_name=file.filename,
+        status="processing",
+        url = result["secure_url"]
+    )
+    print('document',document)
+
+    db.add(document)
+    db.commit()
+    db.refresh(document)
+
+    document_id = str(document.id)
 
 
     model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -32,7 +81,6 @@ async def upload_pdf(file: UploadFile = File(...)):
 )
     
     reader = PdfReader(file.file)
-    document_id = str(uuid.uuid4())
 
     text = ""
 
@@ -47,24 +95,30 @@ async def upload_pdf(file: UploadFile = File(...)):
     for chunk, embedding in zip(chunks, embeddings):
         vectors.append(
             {
-                "id": str(uuid.uuid4()),
+                "id":document_id,
                 "values": embedding.tolist(),
                 "metadata": {
                     "document_id": document_id,
                     "text": chunk,
                     "source": file.filename,
                     "page": page_number,
+                    "user_id":user_id,
                 }
             }
         )
 
     index.upsert(vectors=vectors)
 
-    stats = index.describe_index_stats()
+    # stats = index.describe_index_stats()
+    document.status = "completed"
+    db.commit()
 
     return {
+        "message": "Document uploaded successfully",
         "filename": file.filename,
         "document_id": document_id,
+        "user_id":user_id,
         "chunks": len(chunks),
-        "index_stats": stats
+        # "index_stats": stats
     }
+

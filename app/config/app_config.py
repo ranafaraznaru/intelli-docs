@@ -23,6 +23,10 @@ class AppConfig(BaseSettings):
     alpha_vantage_api_key: str | None = None
     huggingfacehub_api_token: str | None = None
 
+    cloudinary_cloud_name: str
+    cloudinary_api_key: str
+    cloudinary_api_secret: str
+
     langsmith_tracing_v2: bool | None = None
     langsmith_endpoint: str | None = None
     langsmith_api_key: str | None = None
