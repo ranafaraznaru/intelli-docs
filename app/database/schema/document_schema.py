@@ -11,3 +11,4 @@ class DocumentSchema(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.now(timezone.utc))
     status = Column(String, default="processing")  # processing | completed | failed
+    total_pages = Column(Integer, nullable=True)

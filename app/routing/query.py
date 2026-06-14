@@ -20,7 +20,6 @@ index = pc.Index("multi-pdf")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 
-
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     google_api_key=GOOGLE_API_KEY
@@ -55,7 +54,8 @@ async def query(request: QueryRequest):
         top_k=4,
         include_metadata=True,
         filter={
-        "document_id": request.document_id
+        "document_id": request.document_id,
+        "user_id":request.user_id,
     }
     )
     # 3. extract text chunks
@@ -65,8 +65,10 @@ async def query(request: QueryRequest):
         context_chunks.append(match["metadata"]["text"])
         sources.append({
         "score": match["score"],
+        "total_pages": match["total_pages"],
         "text": match["metadata"]["text"][:300]
     })
+    
 
     context = "\n\n".join(context_chunks)
 
