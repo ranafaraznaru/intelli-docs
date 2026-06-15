@@ -18,6 +18,7 @@ from app.database.db import Base
 # Import all schemas to register them in Base.metadata
 from app.database.schema.user_schema import UserSchema
 from app.database.schema.document_schema import DocumentSchema
+from app.database.schema.message_schema import MessageSchema
 
 # add your model's MetaData object here
 # for 'autogenerate' support

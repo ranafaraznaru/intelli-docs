@@ -6,6 +6,11 @@ from langchain_core.prompts import PromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from app.models.query import QueryRequest
 from app.dependencies import authenicate_user
+from app.database.db import get_db
+from sqlalchemy.orm import Session
+from app.services.chat_service import save_message,get_recent_messages,build_chat_history
+from app.services.embedding_service import embedding_model
+
 
 
 router = APIRouter(prefix="/query" , dependencies=[Depends(authenicate_user)])
@@ -26,27 +31,60 @@ llm = ChatGoogleGenerativeAI(
 )
 
 
-prompt = PromptTemplate(
-    template= """
-    you are a helpful assistant.
-    Answer ONLY from the provided transcript context.
-    If the context is insufficient, just say you dont know.
+# prompt = PromptTemplate(
+#     template= """
+#     you are a helpful assistant.
+#     Answer ONLY from the provided transcript context.
+#     If the context is insufficient, just say you dont know.
 
-    {context}
-    Question: {question}
-    """,
-    input_variables=["context", "question"]
-)    
+#     {context}
+#     Question: {question}
+#     """,
+#     input_variables=["context", "question"]
+# )  
+prompt = PromptTemplate(
+    template="""
+You are a helpful assistant.
+
+Conversation History:
+{history}
+
+Document Context:
+{context}
+
+Question:
+{question}
+
+Answer using the document context.
+
+If the answer is not available in the document,
+say you don't know.
+""",
+    input_variables=[
+        "history",
+        "context",
+        "question",
+    ]
+)  
 
 
 @router.post("")
-async def query(request: QueryRequest):
+async def query(request: QueryRequest,db: Session = Depends(get_db),user=Depends(authenicate_user)):
     model = SentenceTransformer("all-MiniLM-L6-v2")
     question = request.question
     sources = []
+    user_id = user["id"]
+
+    save_message(
+    db=db,
+    document_id=int(request.document_id),
+    user_id=user["id"],
+    role="user",
+    content=request.question,
+    )
 
     # 1. convert question to vector
-    query_vector = model.encode(question).tolist()
+    query_vector = embedding_model.encode(question).tolist()
 
     # 2. search Pinecone
     results = index.query(
@@ -55,7 +93,7 @@ async def query(request: QueryRequest):
         include_metadata=True,
         filter={
         "document_id": request.document_id,
-        "user_id":request.user_id,
+        "user_id":user_id,
     }
     )
     # 3. extract text chunks
@@ -65,7 +103,7 @@ async def query(request: QueryRequest):
         context_chunks.append(match["metadata"]["text"])
         sources.append({
         "score": match["score"],
-        "total_pages": match["total_pages"],
+        "page": match["metadata"].get("page"),
         "text": match["metadata"]["text"][:300]
     })
     
@@ -73,13 +111,31 @@ async def query(request: QueryRequest):
     context = "\n\n".join(context_chunks)
 
     # 4. build prompt
+    # final_prompt = prompt.invoke({
+    #     "context": context,
+    #     "question": question
+    # })
+    history_messages = get_recent_messages(
+    db=db,
+    document_id=int(request.document_id),
+    limit=10
+    )
+    history = build_chat_history(history_messages)
     final_prompt = prompt.invoke({
-        "context": context,
-        "question": question
+    "history": history,
+    "context": context,
+    "question": question
     })
 
     # 5. get answer from LLM
     answer = llm.invoke(final_prompt)
+    save_message(
+    db=db,
+    document_id=int(request.document_id),
+    user_id=user["id"],
+    role="assistant",
+    content=answer.content,
+    )
 
     return {
         "question": question,
