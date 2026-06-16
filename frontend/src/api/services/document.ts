@@ -1,6 +1,6 @@
-import { makePostRequest, makeGetRequest, makeDeleteRequest } from '../client';
-import { urls } from '../urls';
-import { Document } from '@/types';
+import { makePostRequest, makeGetRequest, makeDeleteRequest } from "../client";
+import { urls } from "../urls";
+import { Document } from "@/types";
 
 export const documentService = {
   list: async (): Promise<Document[]> => {

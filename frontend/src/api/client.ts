@@ -1,22 +1,22 @@
-import axios, { AxiosRequestConfig } from 'axios';
-import Cookies from 'js-cookie';
-import { ServerToken } from '@/types/api';
-import { handleApiError } from '@/utils/handleApiError';
+import axios, { AxiosRequestConfig } from "axios";
+import Cookies from "js-cookie";
+import { ServerToken } from "@/types/api";
+import { handleApiError } from "@/utils/handleApiError";
 
 export function getUrl() {
-  return process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000/api';
+  return process.env.NEXT_PUBLIC_BACKEND_URL;
 }
 
 const logoutUser = () => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const currentPath = window.location.pathname;
-    if (currentPath !== '/auth/login') {
+    if (currentPath !== "/auth/login") {
       window.location.href = `/auth/login?redirectTo=${encodeURIComponent(
         currentPath,
       )}`;
     }
-    localStorage.removeItem('bluto_user');
-    Cookies.remove('bluto_token');
+    localStorage.removeItem("pdf_user");
+    Cookies.remove("pdf_token");
   }
 };
 
@@ -27,19 +27,19 @@ type PayloadTypes<T> = {
 const apiClient = axios.create({
   baseURL: getUrl(),
   headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
+    "Content-Type": "application/json",
+    Accept: "application/json",
   },
 });
 
 const getAuthToken = (serverToken: ServerToken | null = null) => {
   if (serverToken) {
-    const token = serverToken?.get('bluto_token')?.value;
+    const token = serverToken?.get("pdf_token")?.value;
     if (token) {
       return { headers: { Authorization: `Bearer ${token}` } };
     }
-  } else if (typeof window !== 'undefined') {
-    const token = Cookies.get('bluto_token');
+  } else if (typeof window !== "undefined") {
+    const token = Cookies.get("pdf_token");
     if (token) {
       return { headers: { Authorization: `Bearer ${token}` } };
     }
@@ -67,7 +67,9 @@ async function makeGetRequest(
   serverToken?: ServerToken,
 ) {
   try {
-    const tokenHeaders = withToken ? getAuthToken(serverToken) : { headers: {} };
+    const tokenHeaders = withToken
+      ? getAuthToken(serverToken)
+      : { headers: {} };
     const response = await apiClient.get(url, {
       ...config,
       headers: {
@@ -97,7 +99,7 @@ async function makePostRequest<T>(
       headers: {
         ...tokenHeaders?.headers,
         ...(config?.headers || {}),
-        ...(isFormData ? { 'Content-Type': 'multipart/form-data' } : {}),
+        ...(isFormData ? { "Content-Type": "multipart/form-data" } : {}),
       },
     });
     return response;
@@ -125,9 +127,4 @@ async function makeDeleteRequest(
   }
 }
 
-export {
-  makePostRequest,
-  makeGetRequest,
-  makeDeleteRequest,
-  apiClient,
-};
+export { makePostRequest, makeGetRequest, makeDeleteRequest, apiClient };
