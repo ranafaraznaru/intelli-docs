@@ -135,7 +135,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <main className="min-h-screen bg-slate-900 flex items-center justify-center px-4 pb-8 pt-28 relative overflow-hidden">
       <Navbar variant="auth-login" />
       <AmbientBackground />
 

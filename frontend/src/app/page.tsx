@@ -98,12 +98,12 @@ export default function LandingPage() {
     <main className="min-h-screen">
       <Navbar />
       {/* --- HERO SECTION --- */}
-      <section className="relative h-[110vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[760px] h-[110vh] flex items-center justify-center overflow-hidden px-4">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-slate-900 opacity-80 z-10" />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900 z-20" />
           <Image
-            src="https://images.unsplash.com/photo-1451187580450-de86905eB085?q=80&w=2070"
+            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070"
             className="object-cover"
             alt="Background"
             fill
@@ -112,18 +112,18 @@ export default function LandingPage() {
           />
         </div>
 
-        <div className="relative z-30 text-center px-4 flex flex-col items-center gap-8">
+        <div className="relative z-30 text-center w-full max-w-5xl flex flex-col items-center gap-6 sm:gap-8">
           <div className="px-4 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 text-xs font-display uppercase tracking-widest">
-            <span className="mr-2">✨</span> Now with Multi-PDF Sync
+            Now with Multi-PDF Sync
           </div>
 
-          <h1 className="font-serif text-6xl md:text-8xl text-white tracking-tight leading-tight max-w-5xl">
+          <h1 className="font-serif text-4xl sm:text-6xl md:text-8xl text-white tracking-tight leading-tight max-w-5xl">
             Understand your{" "}
             <span className="italic text-indigo-400">knowledge</span> <br /> in
             a new dimension.
           </h1>
 
-          <div className="text-slate-300 text-xl md:text-2xl font-sans max-w-2xl animate-typing">
+          <div className="text-slate-300 text-base sm:text-xl md:text-2xl font-sans max-w-2xl animate-typing">
             Experience the next generation of document intelligence.
           </div>
 
@@ -142,12 +142,12 @@ export default function LandingPage() {
         </div>
 
         {/* Integration Bar */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 w-full max-w-4xl px-4">
+        <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 z-30 w-full max-w-4xl px-4">
           <GlassPanel
             variant="soft"
-            className="flex items-center justify-between p-4 rounded-2xl overflow-hidden"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-0 p-4 rounded-2xl overflow-hidden"
           >
-            <div className="flex items-center gap-4 px-4">
+            <div className="flex items-center justify-between sm:justify-start gap-4 px-1 sm:px-4">
               <span className="text-xs font-display uppercase tracking-widest text-slate-400">
                 Frameworks
               </span>
@@ -157,8 +157,8 @@ export default function LandingPage() {
                 <div className="w-6 h-6 bg-white rounded-full" />
               </div>
             </div>
-            <div className="h-8 w-px bg-white/10" />
-            <div className="flex items-center gap-4 px-4 overflow-hidden w-full max-w-sm">
+            <div className="hidden sm:block h-8 w-px bg-white/10" />
+            <div className="flex items-center gap-4 px-1 sm:px-4 overflow-hidden w-full sm:max-w-sm">
               <span className="text-xs font-display uppercase tracking-widest text-slate-400 shrink-0">
                 Integrations
               </span>
@@ -182,13 +182,13 @@ export default function LandingPage() {
       </section>
 
       {/* --- FEATURE SCROLL-SPY --- */}
-      <section className="bg-[#f8f9fa] py-24 px-8 lg:px-20" id="features">
+      <section className="bg-[#f8f9fa] py-16 sm:py-24 px-4 sm:px-8 lg:px-20" id="features">
         <div className="max-w-7xl mx-auto flex gap-20">
           <div className="hidden lg:block w-1/4">
             <StickyFeatureNav features={FEATURES} />
           </div>
 
-          <div className="w-full lg:w-3/4 flex flex-col gap-32">
+          <div className="w-full lg:w-3/4 flex flex-col gap-20 sm:gap-32">
             {FEATURES.map((f) => (
               <div
                 key={f.id}
@@ -196,7 +196,7 @@ export default function LandingPage() {
                 className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
               >
                 <div className="space-y-6">
-                  <h3 className="font-serif text-4xl text-slate-900 tracking-tight">
+                  <h3 className="font-serif text-3xl sm:text-4xl text-slate-900 tracking-tight">
                     {f.title}
                   </h3>
                   <p className="text-slate-600 text-lg leading-relaxed font-sans">
@@ -216,9 +216,9 @@ export default function LandingPage() {
       </section>
 
       {/* --- TESTIMONIALS --- */}
-      <section className="bg-slate-900 py-24 px-4 overflow-hidden">
-        <div className="max-w-7xl mx-auto text-center mb-16">
-          <h2 className="font-serif text-5xl text-white tracking-tight">
+      <section className="bg-slate-900 py-16 sm:py-24 px-4 overflow-hidden">
+        <div className="max-w-7xl mx-auto text-center mb-12 sm:mb-16">
+          <h2 className="font-serif text-4xl sm:text-5xl text-white tracking-tight">
             Loved by visionaries.
           </h2>
         </div>
@@ -257,10 +257,9 @@ export default function LandingPage() {
         <FAQ items={FAQS} />
       </section>
 
-      {/* --- FOOTER --- */}
       <footer className="bg-slate-900 py-12 border-t border-white/10 text-center">
         <div className="text-slate-500 text-sm font-display tracking-tight">
-          &copy; {new Date().getFullYear()} Superdesign. All rights reserved.
+          &copy; {new Date().getFullYear()} Askfolio. All rights reserved.
         </div>
       </footer>
     </main>

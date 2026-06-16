@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/context/auth-context";
-import { AppShell } from "@/components/app-shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Superdesign | Multi-PDF Intelligence",
+  title: "Askfolio | Multi-PDF Intelligence",
   description:
-    "Upload PDFs, vectorize them, and chat with your documents using semantic search.",
+    "Upload PDFs, vectorize them, and ask questions across your document library.",
 };
 
 export default function RootLayout({
@@ -19,7 +18,7 @@ export default function RootLayout({
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
         <AuthProvider>
-          <AppShell>{children}</AppShell>
+          {children}
           <Toaster
             position="top-right"
             toastOptions={{

@@ -11,6 +11,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
+import { BrandMark } from "@/components/brand-mark";
 
 export function AppNavbar() {
   const { user, logout } = useAuth();
@@ -26,12 +27,7 @@ export function AppNavbar() {
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-6 min-w-0">
           <Link href="/dashboard" className="flex items-center gap-2 group shrink-0">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg transition-transform duration-500 group-hover:rotate-180 flex items-center justify-center text-white font-bold text-sm">
-              S
-            </div>
-            <span className="text-white font-display font-bold text-lg lowercase tracking-tight hidden sm:block">
-              superdesign
-            </span>
+            <BrandMark className="[&>span]:hidden sm:[&>span]:block [&>span]:text-lg" />
           </Link>
 
           <nav className="hidden md:flex items-center gap-1 glass-soft rounded-full px-2 py-1">

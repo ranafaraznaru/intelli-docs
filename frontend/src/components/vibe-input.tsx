@@ -29,14 +29,14 @@ export const VibeInput: React.FC<VibeInputProps> = ({
   };
 
   return (
-    <div className="relative group w-full max-w-3xl mx-auto">
+    <div className="relative group w-full max-w-3xl mx-auto px-1 sm:px-0">
       {/* The Glow Effect */}
       <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
 
       {/* Main Container */}
-      <div className="relative bg-white rounded-2xl p-4 shadow-2xl flex flex-col gap-3">
+      <div className="relative bg-white rounded-2xl p-3 sm:p-4 shadow-2xl flex flex-col gap-3">
         <textarea
-          className="w-full resize-none border-none focus:ring-0 text-xl text-slate-900 placeholder-slate-400 px-2 py-1 min-h-[100px]"
+          className="w-full resize-none border-none focus:ring-0 text-base sm:text-xl text-slate-900 placeholder-slate-400 px-2 py-1 min-h-[92px] sm:min-h-[100px]"
           placeholder={placeholder}
           value={text}
           disabled={disabled || isLoading}
