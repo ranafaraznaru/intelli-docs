@@ -4,7 +4,7 @@ from pinecone import Pinecone
 from fastapi import UploadFile, File, APIRouter, Depends, HTTPException
 from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from app.dependencies import authenicate_user
+from app.dependencies import authenicate_user, get_pinecone_index
 from app.database.db import get_db
 from sqlalchemy.orm import Session
 from app.services.embedding_service import embedding_model
@@ -26,13 +26,8 @@ def get_cloudinary():
         api_secret=config.cloudinary_api_secret,
     )
 
-pc = Pinecone(
-    api_key=os.getenv("PINECONE_API_KEY")
-)
-index = pc.Index("multi-pdf")
-
 @router.post("")
-async def upload_pdf(file: UploadFile = File(...), db: Session = Depends(get_db), user=Depends(authenicate_user)):
+async def upload_pdf(file: UploadFile = File(...), db: Session = Depends(get_db), user=Depends(authenicate_user), index=Depends(get_pinecone_index)):
     user_id = user["id"]
 
     if file.content_type != "application/pdf":
@@ -132,7 +127,7 @@ async def list_documents(db: Session = Depends(get_db), user=Depends(authenicate
     }
 
 @router.delete("/{document_id}")
-async def delete_document(document_id: int, db: Session = Depends(get_db), user=Depends(authenicate_user)):
+async def delete_document(document_id: int, db: Session = Depends(get_db), user=Depends(authenicate_user), index=Depends(get_pinecone_index)):
     """Delete a document from database and remove vectors from Pinecone."""
     user_id = user["id"]
 
