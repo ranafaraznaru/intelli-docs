@@ -15,5 +15,5 @@ pypdf
 cloudinary
 pyjwt
 python-dotenv
-pwdlib
+pwdlib[argon2]
 python-multipart
