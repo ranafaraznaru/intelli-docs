@@ -2,10 +2,13 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from app.routing import auth,documents , chat
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.database.db import Base, engine
 
 app = FastAPI()
 load_dotenv()
+
+# Automatically create tables if they don't exist
+Base.metadata.create_all(bind=engine)
 
 origins = [
     "http://localhost:3000",
