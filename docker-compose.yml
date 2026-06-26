@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   backend:
     image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
@@ -16,8 +18,10 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - backend
     networks:
