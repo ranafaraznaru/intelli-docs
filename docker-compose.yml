@@ -6,7 +6,7 @@ services:
     container_name: multi-pdf-backend
     restart: unless-stopped
     env_file:
-      - .env
+      - /home/ubuntu/multi-pdf-backend.env
     ports:
       - "8000:8000"
     networks:
