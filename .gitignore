@@ -32,6 +32,11 @@ frontend/.env.development.local
 frontend/.env.test.local
 frontend/.env.production.local
 
+# --- Documentation (local drafts) ---
+DEPLOYMENT_JOURNEY_2.md
+DEPLOYMENT_JOURNEY.md
+PIPELINE.md
+
 # --- Database ---
 *.sqlite3
 *.db
