@@ -84,17 +84,13 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
         run: |
           # Copy the master env file to the current directory so Docker Compose can find it
-          cp /home/ubuntu/intelli-docs-backend.env .env
-
-          # Stop and remove old containers (if they exist) to avoid name conflicts
-          docker stop intelli-docs-backend intelli-docs-nginx multi-pdf-backend multi-pdf-nginx 2>/dev/null || true
-          docker rm intelli-docs-backend intelli-docs-nginx multi-pdf-backend multi-pdf-nginx 2>/dev/null || true
+          cp /home/ubuntu/multi-docs-backend.env .env
 
           # Pull latest image explicitly for the backend service
-          docker compose pull
+          docker-compose pull
 
           # Start the services in detached mode
-          docker compose up -d
+          docker-compose up -d
 
           # Clean up old unused images to save disk space on EC2
           docker image prune -f
