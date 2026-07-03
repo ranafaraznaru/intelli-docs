@@ -4,7 +4,7 @@ import { AuthProvider } from "@/context/auth-context";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Askfolio | Multi-PDF Intelligence",
+  title: "Intelli Docs | AI Document Intelligence",
   description:
     "Upload PDFs, vectorize them, and ask questions across your document library.",
 };

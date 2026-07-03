@@ -17,7 +17,7 @@ router = APIRouter(prefix="/chat" , dependencies=[Depends(authenicate_user)])
 pc = Pinecone(
     api_key=os.getenv("PINECONE_API_KEY")
 )
-index = pc.Index("multi-pdf")
+index = pc.Index("intelli-docs")
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 

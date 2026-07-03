@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -15,9 +15,9 @@
   --color-surface-white: var(--surface-white);
   --color-border-white: var(--border-white);
 
-  --font-serif: 'Lora', serif;
-  --font-sans: 'Inter', sans-serif;
-  --font-display: 'Space Grotesk', sans-serif;
+  --font-serif: "Lora", serif;
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
 }
 
 body {
@@ -45,20 +45,31 @@ body {
 
 /* Animations */
 @keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 .animate-typing {
   overflow: hidden;
   white-space: nowrap;
   border-right: 2px solid var(--brand-indigo);
-  animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+  animation:
+    typing 3.5s steps(40, end),
+    blink-caret 0.75s step-end infinite;
 }
 
 @keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: var(--brand-indigo); }
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: var(--brand-indigo);
+  }
 }
 
 @keyframes slide-up {
@@ -89,4 +100,22 @@ body {
 
 .animate-slide-down {
   animation: slide-down 0.5s ease-in-out forwards;
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 12s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }

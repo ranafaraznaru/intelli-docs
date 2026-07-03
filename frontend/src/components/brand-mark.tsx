@@ -17,7 +17,7 @@ export function BrandMark({ compact = false, className = "" }: BrandMarkProps) {
         >
           <path
             d="M10 8.5h11.8L27 13.7v13.8H10V8.5Z"
-            fill="url(#askfolio-page)"
+            fill="url(#intelli-docs-page)"
           />
           <path
             d="M21.8 8.5v5.2H27"
@@ -47,7 +47,7 @@ export function BrandMark({ compact = false, className = "" }: BrandMarkProps) {
           />
           <defs>
             <linearGradient
-              id="askfolio-page"
+              id="intelli-docs-page"
               x1="10"
               x2="28.5"
               y1="8.5"
@@ -62,7 +62,7 @@ export function BrandMark({ compact = false, className = "" }: BrandMarkProps) {
       </div>
       {!compact && (
         <span className="font-display text-xl font-bold lowercase tracking-tight text-white">
-          askfolio
+          intelli-docs
         </span>
       )}
     </div>

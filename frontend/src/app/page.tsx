@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
-import { VibeInput } from "@/components/vibe-input";
+import Link from "next/link";
 import { GlassPanel } from "@/components/glass-panel";
 import { StickyFeatureNav } from "@/components/sticky-feature-nav";
 import { FAQ } from "@/components/faq";
 import { Navbar } from "@/components/navbar";
-import { chatService } from "@/api/services/chat";
-import { ChatResponse } from "@/types";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 const FEATURES = [
   {
@@ -76,24 +75,31 @@ const FAQS = [
   },
 ];
 
+const FRAMEWORKS = [
+  { name: "FastAPI", icon: "⚡", color: "from-green-500/20 to-emerald-500/20" },
+  {
+    name: "LangChain",
+    icon: "🦜",
+    color: "from-orange-500/20 to-amber-500/20",
+  },
+  { name: "Next.js", icon: "▲", color: "from-white/20 to-slate-500/20" },
+  { name: "Pinecone", icon: "🌲", color: "from-teal-500/20 to-cyan-500/20" },
+  { name: "Gemini AI", icon: "✨", color: "from-blue-500/20 to-indigo-500/20" },
+  { name: "PostgreSQL", icon: "🐘", color: "from-blue-600/20 to-sky-500/20" },
+];
+
+const INTEGRATIONS = [
+  { name: "Pinecone", icon: "🌲" },
+  { name: "Gemini 2.5", icon: "✨" },
+  { name: "Cloudinary", icon: "☁️" },
+  { name: "LangChain", icon: "🦜" },
+  { name: "OpenAI", icon: "🧠" },
+  { name: "Docker", icon: "🐳" },
+  { name: "AWS EC2", icon: "☁️" },
+  { name: "FastAPI", icon: "⚡" },
+];
+
 export default function LandingPage() {
-  const [isQuerying, setIsQuerying] = useState(false);
-  const [lastResponse, setLastResponse] = useState<ChatResponse | null>(null);
-
-  const handleSend = async (text: string) => {
-    setIsQuerying(true);
-    try {
-      // Note: Using a hardcoded docId for demo purposes in landing page.
-      // In a real flow, this would come from the active document context.
-      const response = await chatService.query(1, text);
-      setLastResponse(response);
-    } catch (e) {
-      console.error("Query failed", e);
-    } finally {
-      setIsQuerying(false);
-    }
-  };
-
   return (
     <main className="min-h-screen">
       <Navbar />
@@ -114,7 +120,7 @@ export default function LandingPage() {
 
         <div className="relative z-30 text-center w-full max-w-5xl flex flex-col items-center gap-6 sm:gap-8">
           <div className="px-4 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 text-xs font-display uppercase tracking-widest">
-            Now with Multi-PDF Sync
+            Now with AI-Powered Chat
           </div>
 
           <h1 className="font-serif text-4xl sm:text-6xl md:text-8xl text-white tracking-tight leading-tight max-w-5xl">
@@ -127,18 +133,27 @@ export default function LandingPage() {
             Experience the next generation of document intelligence.
           </div>
 
-          <VibeInput onSend={handleSend} isLoading={isQuerying} />
+          {/* CTA Buttons - Direct users to sign in */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
+            <Link
+              href="/auth/register"
+              className="flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50"
+            >
+              <Sparkles size={20} />
+              Get Started Free
+              <ArrowRight size={18} />
+            </Link>
+            <Link
+              href="/auth/login"
+              className="flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl font-semibold text-lg transition-all duration-300"
+            >
+              Sign In
+            </Link>
+          </div>
 
-          {lastResponse && (
-            <div className="mt-8 p-6 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl max-w-2xl text-left animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <p className="text-indigo-300 text-xs font-display uppercase tracking-widest mb-2">
-                AI Response
-              </p>
-              <p className="text-white font-sans leading-relaxed">
-                {lastResponse.answer}
-              </p>
-            </div>
-          )}
+          <p className="text-slate-400 text-sm font-sans max-w-md">
+            Upload your PDFs and start asking questions in seconds.
+          </p>
         </div>
 
         {/* Integration Bar */}
@@ -149,12 +164,21 @@ export default function LandingPage() {
           >
             <div className="flex items-center justify-between sm:justify-start gap-4 px-1 sm:px-4">
               <span className="text-xs font-display uppercase tracking-widest text-slate-400">
-                Frameworks
+                Powered By
               </span>
-              <div className="flex gap-4 opacity-60">
-                <div className="w-6 h-6 bg-white rounded-full" />
-                <div className="w-6 h-6 bg-white rounded-full" />
-                <div className="w-6 h-6 bg-white rounded-full" />
+              <div className="flex gap-2 opacity-90">
+                {FRAMEWORKS.slice(0, 4).map((fw) => (
+                  <div
+                    key={fw.name}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r ${fw.color} border border-white/10 rounded-lg hover:scale-105 transition-transform cursor-pointer`}
+                    title={fw.name}
+                  >
+                    <span className="text-base">{fw.icon}</span>
+                    <span className="text-xs text-white font-medium hidden sm:inline">
+                      {fw.name}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
             <div className="hidden sm:block h-8 w-px bg-white/10" />
@@ -162,19 +186,19 @@ export default function LandingPage() {
               <span className="text-xs font-display uppercase tracking-widest text-slate-400 shrink-0">
                 Integrations
               </span>
-              <div className="flex gap-6 animate-marquee whitespace-nowrap">
-                <span className="text-sm text-slate-300 hover:text-indigo-400 transition-colors cursor-pointer">
-                  Pinecone
-                </span>
-                <span className="text-sm text-slate-300 hover:text-indigo-400 transition-colors cursor-pointer">
-                  Gemini
-                </span>
-                <span className="text-sm text-slate-300 hover:text-indigo-400 transition-colors cursor-pointer">
-                  Cloudinary
-                </span>
-                <span className="text-sm text-slate-300 hover:text-indigo-400 transition-colors cursor-pointer">
-                  LangChain
-                </span>
+              <div className="relative overflow-hidden w-full">
+                <div className="flex gap-6 animate-marquee whitespace-nowrap">
+                  {/* Duplicate items for seamless loop */}
+                  {[...INTEGRATIONS, ...INTEGRATIONS].map((int, idx) => (
+                    <span
+                      key={`${int.name}-${idx}`}
+                      className="inline-flex items-center gap-1.5 text-sm text-slate-300 hover:text-indigo-400 transition-colors cursor-pointer"
+                    >
+                      <span>{int.icon}</span>
+                      {int.name}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </GlassPanel>
@@ -182,7 +206,10 @@ export default function LandingPage() {
       </section>
 
       {/* --- FEATURE SCROLL-SPY --- */}
-      <section className="bg-[#f8f9fa] py-16 sm:py-24 px-4 sm:px-8 lg:px-20" id="features">
+      <section
+        className="bg-[#f8f9fa] py-16 sm:py-24 px-4 sm:px-8 lg:px-20"
+        id="features"
+      >
         <div className="max-w-7xl mx-auto flex gap-20">
           <div className="hidden lg:block w-1/4">
             <StickyFeatureNav features={FEATURES} />
@@ -259,7 +286,7 @@ export default function LandingPage() {
 
       <footer className="bg-slate-900 py-12 border-t border-white/10 text-center">
         <div className="text-slate-500 text-sm font-display tracking-tight">
-          &copy; {new Date().getFullYear()} Askfolio. All rights reserved.
+          &copy; {new Date().getFullYear()} Intelli Docs. All rights reserved.
         </div>
       </footer>
     </main>
