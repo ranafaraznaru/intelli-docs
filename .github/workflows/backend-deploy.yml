@@ -84,7 +84,7 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
         run: |
           # Copy the master env file to the current directory so Docker Compose can find it
-          cp /home/ubuntu/multi-docs-backend.env .env
+          cp /home/ubuntu/intelli-docs-backend.env .env
 
           # Pull latest image explicitly for the backend service
           docker-compose pull
