@@ -12,7 +12,7 @@ Base.metadata.create_all(bind=engine)
 
 origins = [
     "http://localhost:3000",
-    "https://intelli-docs.vercel.app",
+    "https://intelli-docs-nu.vercel.app",
 ]
 
 app.add_middleware(
