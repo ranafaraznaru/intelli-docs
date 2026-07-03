@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   backend:
     image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
-    container_name: multi-pdf-backend
+    container_name: intelli-docs-backend
     restart: unless-stopped
     env_file:
       - .env
@@ -14,7 +12,7 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: multi-pdf-nginx
+    container_name: intelli-docs-nginx
     restart: unless-stopped
     ports:
       - "80:80"
