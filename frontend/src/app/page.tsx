@@ -7,7 +7,8 @@ import { GlassPanel } from "@/components/glass-panel";
 import { StickyFeatureNav } from "@/components/sticky-feature-nav";
 import { FAQ } from "@/components/faq";
 import { Navbar } from "@/components/navbar";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, LayoutDashboard, Sparkles } from "lucide-react";
+import { useAuth } from "@/context/auth-context";
 
 const FEATURES = [
   {
@@ -100,6 +101,8 @@ const INTEGRATIONS = [
 ];
 
 export default function LandingPage() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <main className="min-h-screen">
       <Navbar />
@@ -133,26 +136,41 @@ export default function LandingPage() {
             Experience the next generation of document intelligence.
           </div>
 
-          {/* CTA Buttons - Direct users to sign in */}
+          {/* CTA Buttons — adapt to auth state */}
           <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
-            <Link
-              href="/auth/register"
-              className="flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50"
-            >
-              <Sparkles size={20} />
-              Get Started Free
-              <ArrowRight size={18} />
-            </Link>
-            <Link
-              href="/auth/login"
-              className="flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl font-semibold text-lg transition-all duration-300"
-            >
-              Sign In
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50"
+              >
+                <LayoutDashboard size={20} />
+                Go to Dashboard
+                <ArrowRight size={18} />
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/auth/register"
+                  className="flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50"
+                >
+                  <Sparkles size={20} />
+                  Get Started Free
+                  <ArrowRight size={18} />
+                </Link>
+                <Link
+                  href="/auth/login"
+                  className="flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl font-semibold text-lg transition-all duration-300"
+                >
+                  Sign In
+                </Link>
+              </>
+            )}
           </div>
 
           <p className="text-slate-400 text-sm font-sans max-w-md">
-            Upload your PDFs and start asking questions in seconds.
+            {isAuthenticated
+              ? "Pick up where you left off — your documents are ready."
+              : "Upload your PDFs and start asking questions in seconds."}
           </p>
         </div>
 

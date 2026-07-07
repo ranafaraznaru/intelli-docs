@@ -26,7 +26,7 @@ export function AppNavbar() {
     <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-900/80 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-6 min-w-0">
-          <Link href="/dashboard" className="flex items-center gap-2 group shrink-0">
+          <Link href="/" className="flex items-center gap-2 group shrink-0">
             <BrandMark className="[&>span]:hidden sm:[&>span]:block [&>span]:text-lg" />
           </Link>
 
