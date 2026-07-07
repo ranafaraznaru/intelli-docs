@@ -17,8 +17,8 @@ graph TD
     subgraph "AI & Data Pipeline"
         BE -->|Upload PDF| Cloudinary[Cloudinary Storage]
         BE -->|Extract & Chunk| TextProcessor[Text Splitter]
-        TextProcessor -->|Embeddings| OpenAI[OpenAI Embeddings]
-        OpenAI -->|Upsert Vectors| Pinecone[Pinecone Vector DB]
+        TextProcessor -->|Embeddings| Gemini[Gemini Embeddings]
+        Gemini -->|Upsert Vectors| Pinecone[Pinecone Vector DB]
         BE -->|Query Vector| Pinecone
         Pinecone -->|Retrieve Context| BE
         BE -->|Augmented Prompt| Gemini[Google Gemini 2.5 Flash]
@@ -56,7 +56,7 @@ graph TD
 - **File Storage**: Cloudinary
 - **AI Integration**:
   - **LLM**: Google Gemini 2.5 Flash
-  - **Embeddings**: OpenAI Embeddings (Planned/Integrated)
+  - **Embeddings**: Google Gemini Embeddings
   - **Orchestration**: LangChain (Text Splitting & Prompting)
 
 ### Infrastructure & DevOps
@@ -82,11 +82,11 @@ graph TD
 
 ### 1. Document Ingestion Flow
 
-`User Upload` $\rightarrow$ `Cloudinary (Storage)` $\rightarrow$ `PyPDF (Extraction)` $\rightarrow$ `Recursive Character Splitting` $\rightarrow$ `OpenAI Embeddings` $\rightarrow$ `Pinecone (Indexing)` $\rightarrow$ `Aurora DB (Metadata)`.
+`User Upload` $\rightarrow$ `Cloudinary (Storage)` $\rightarrow$ `PyPDF (Extraction)` $\rightarrow$ `Recursive Character Splitting` $\rightarrow$ `Gemini Embeddings` $\rightarrow$ `Pinecone (Indexing)` $\rightarrow$ `Aurora DB (Metadata)`.
 
 ### 2. Chat Query Flow
 
-`User Question` $\rightarrow$ `OpenAI Embeddings` $\rightarrow$ `Pinecone Vector Search` $\rightarrow$ `Context Retrieval` $\rightarrow$ `Prompt Augmentation (History + Context)` $\rightarrow$ `Gemini LLM` $\rightarrow$ `Final Answer`.
+`User Question` $\rightarrow$ `Gemini Embeddings` $\rightarrow$ `Pinecone Vector Search` $\rightarrow$ `Context Retrieval` $\rightarrow$ `Prompt Augmentation (History + Context)` $\rightarrow$ `Gemini LLM` $\rightarrow$ `Final Answer`.
 
 ### 3. Deployment Flow
 
@@ -97,7 +97,7 @@ graph TD
 ### Prerequisites
 
 - Docker & Docker Compose
-- API Keys: Google Gemini, Pinecone, Cloudinary, OpenAI
+- API Keys: Google Gemini, Pinecone, Cloudinary
 
 ### Installation
 
@@ -115,7 +115,6 @@ graph TD
    DATABASE_URL=postgresql://user:pass@host:port/db
    PINECONE_API_KEY=your_key
    GOOGLE_API_KEY=your_key
-   OPENAI_API_KEY=your_key
    CLOUDINARY_CLOUD_NAME=your_name
    CLOUDINARY_API_KEY=your_key
    CLOUDINARY_API_SECRET=your_secret
@@ -128,6 +127,7 @@ graph TD
    ```
 
 4. Start Frontend:
+
    ```bash
    cd frontend
    npm install
@@ -150,4 +150,4 @@ graph TD
 ### Chat
 
 - `POST /api/v1/chat/{doc_id}/query` - Ask a question about a specific document.
-- `GET /api/v1/chat/{doc_id}/history` - Retrieve chat history for a document.
+- `GET /api/v1/chat/{doc_id}/history` - Retrieve chat history for a specific document.
