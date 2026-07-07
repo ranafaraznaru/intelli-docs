@@ -89,7 +89,8 @@ async def query(doc_id: int, request: QueryRequest, db: Session = Depends(get_db
     )
 
     # 1. convert question to vector
-    query_vector = embedding_model.encode(question).tolist()
+    # query_vector = embedding_model.encode(question).tolist()
+    query_vector = embedding_model.encode(question)    
 
     # 2. search Pinecone
     results = index.query(

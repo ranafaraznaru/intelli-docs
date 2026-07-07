@@ -83,7 +83,8 @@ async def upload_pdf(file: UploadFile = File(...), db: Session = Depends(get_db)
     for doc, embedding in zip(documents, embeddings):
         vectors.append({
             "id": str(uuid.uuid4()),
-            "values": embedding.tolist(),
+            # "values": embedding.tolist(),
+            "values": embedding,
             "metadata": {
                 "document_id": document_id,
                 "user_id": user_id,
@@ -140,12 +141,30 @@ async def delete_document(document_id: int, db: Session = Depends(get_db), user=
     if not document:
         raise HTTPException(status_code=404, detail="Document not found or unauthorized")
 
-    # 1. Remove vectors from Pinecone
-    try:
-        index.delete(filter={"document_id": str(document_id)})
-    except Exception as e:
-        # We log this but still proceed with DB deletion to avoid orphaned records
-        print(f"Error deleting Pinecone vectors: {e}")
+    # 1. Remove vectors from Pinecone — idempotent & truthful.
+    # Only documents that reached "completed" status were ever embedded and
+    # upserted to Pinecone. Failed / "processing" uploads have no vectors, so
+    # we skip the call entirely instead of provoking a noisy 404.
+    vectors_status = "not_present"   # "deleted" | "not_present" | "failed"
+    vectors_error = None
+
+    if document.status == "completed":
+        try:
+            index.delete(filter={"document_id": str(document_id)})
+            vectors_status = "deleted"
+        except Exception as e:
+            msg = str(e)
+            # Pinecone (serverless) returns 404 "Namespace not found" when the
+            # target namespace is empty / was never created. For a DELETE that
+            # is exactly the desired end-state, so treat it as "nothing to remove".
+            if "404" in msg or "not found" in msg.lower() or "namespace" in msg.lower():
+                vectors_status = "not_present"
+            else:
+                # Genuine failure (auth, network, quota...). We still remove the
+                # DB record to avoid orphaned rows, but report it honestly.
+                vectors_status = "failed"
+                vectors_error = msg
+                print(f"[delete_document] Pinecone delete failed for doc {document_id}: {e}")
 
     # 2. Delete associated messages from Database
     db.query(MessageSchema).filter(MessageSchema.document_id == document_id).delete()
@@ -154,4 +173,12 @@ async def delete_document(document_id: int, db: Session = Depends(get_db), user=
     db.delete(document)
     db.commit()
 
-    return {"message": f"Document {document_id}, its messages, and its associated vectors have been deleted"}
+    return {
+        "success": True,
+        "message": f"Document {document_id} and its messages have been deleted.",
+        "document_id": document_id,
+        "vectors": {
+            "status": vectors_status,
+            "error": vectors_error,
+        },
+    }
